@@ -1,0 +1,16 @@
+LEZIONE MESOPOTAMIA — ITALIANO E ARABO
+Ideato e realizzato dal Prof. Marco Cigolotti con il supporto dell’intelligenza artificiale.
+
+PUBBLICAZIONE SU GITHUB PAGES
+1. Estrai lo ZIP.
+2. Carica nel repository index.html, app.js, data.js, style.css e la cartella assets completa.
+   index.html deve trovarsi nella radice del repository.
+3. Apri Settings > Pages > Deploy from a branch.
+4. Seleziona main e / (root), quindi Save.
+5. Apri il collegamento indicato da GitHub quando la pubblicazione è terminata.
+
+Non richiede installazione, compilazione, chiavi API o servizi esterni.
+Puoi aprire index.html anche sul computer per leggere la lezione offline.
+Il contenuto e le immagini provengono dal documento Word fornito.
+I crediti delle singole fotografie sono riportati alla fine della lezione.
+Le immagini si ingrandiscono al clic. È presente un pulsante per aumentare il testo.
