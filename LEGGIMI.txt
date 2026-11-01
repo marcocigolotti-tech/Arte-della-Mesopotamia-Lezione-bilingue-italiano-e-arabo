@@ -3,7 +3,7 @@ Ideato e realizzato dal Prof. Marco Cigolotti con il supporto dell’intelligenz
 
 PUBBLICAZIONE SU GITHUB PAGES
 1. Estrai lo ZIP.
-2. Carica nel repository index.html, app.js, data.js, style.css e la cartella assets completa.
+2. Carica nel repository index.html, app.js, data.js, style.css, audio.js, glossario.html, glossario.js e la cartella assets completa.
    index.html deve trovarsi nella radice del repository.
 3. Apri Settings > Pages > Deploy from a branch.
 4. Seleziona main e / (root), quindi Save.
@@ -11,6 +11,7 @@ PUBBLICAZIONE SU GITHUB PAGES
 
 Non richiede installazione, compilazione, chiavi API o servizi esterni.
 Puoi aprire index.html anche sul computer per leggere la lezione offline.
-Il contenuto e le immagini provengono dal documento Word fornito.
+Il contenuto della lezione e le immagini provengono dal documento Word fornito. Il glossario include immagini aggiuntive con crediti e licenze in italiano e in arabo.
 I crediti delle singole fotografie sono riportati alla fine della lezione.
 Le immagini si ingrandiscono al clic. È presente un pulsante per aumentare il testo.
+Nella lezione e nel glossario trovi anche i pulsanti per ascoltare il contenuto in italiano o in arabo, mettere in pausa e interrompere la lettura. La funzione usa le voci vocali disponibili nel browser e nel dispositivo; per la lettura araba serve una voce araba installata.

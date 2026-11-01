@@ -6,10 +6,14 @@ let section=0;
 function paragraph(block){
  const wrap=document.createElement('div');
  if(block.text){
-  const p=document.createElement('p');p.textContent=block.text;
-  if(/^https?:\/\//.test(block.text)){const a=document.createElement('a');a.href=block.text;a.textContent=block.text;a.target='_blank';a.rel='noopener noreferrer';p.replaceChildren(a);}
-  if(/^Lato della (guerra|pace)$/.test(block.text))p.className='caption';
-  wrap.append(p);
+  const pieces=block.text.split(/\s+\|\s+/);
+  for(const piece of pieces){
+   const p=document.createElement('p');p.textContent=piece;
+   const isArabic=/[\u0600-\u06ff]/.test(piece);p.lang=isArabic?'ar':'it';if(isArabic)p.dir='rtl';
+   if(/^https?:\/\//.test(piece)){const a=document.createElement('a');a.href=piece;a.textContent=piece;a.target='_blank';a.rel='noopener noreferrer';p.replaceChildren(a);}
+   if(/^Lato della (guerra|pace)$/.test(piece))p.className='caption';
+   wrap.append(p);
+  }
  }
  for(const pic of block.images){
   const figure=document.createElement('figure');const button=document.createElement('button');button.className='image-button';button.setAttribute('aria-label','Ingrandisci: '+pic.alt);
@@ -29,7 +33,7 @@ function render(block,nested=false){
   if(isSection&&i===0)line.classList.add('section-title');
   row.forEach((cell,col)=>{const c=document.createElement('div');c.className='cell';
    const txt=cell.map(b=>b.text||'').join(' ');
-   if(col===1&&/[\u0600-\u06ff]/.test(txt)){c.lang='ar';c.dir='rtl';}
+   const isArabic=/[\u0600-\u06ff]/.test(txt);c.lang=isArabic?'ar':'it';c.dir=isArabic?'rtl':'ltr';
    if(isSection&&i===0){const h=document.createElement('h2');h.textContent=txt;c.append(h);}else cell.forEach(b=>c.append(render(b,true)));
    line.append(c);
   });container.append(line);
@@ -41,3 +45,4 @@ document.querySelector('#close').onclick=()=>viewer.close();
 viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.close();});
 document.querySelector('#size').onclick=e=>{const active=document.body.classList.toggle('large-text');e.target.textContent=active?'Testo normale':'Aumenta testo';e.target.setAttribute('aria-pressed',String(active));};
 document.querySelector('#print').onclick=()=>window.print();
+const speechScript=document.createElement('script');speechScript.src='audio.js';document.body.append(speechScript);

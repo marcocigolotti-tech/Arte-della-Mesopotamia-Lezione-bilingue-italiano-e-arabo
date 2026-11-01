@@ -7,3 +7,4 @@ if(t.image){const img=document.createElement('img');img.src='assets/image'+t.ima
 for(const lang of ['it','ar']){const col=document.createElement('div');col.lang=lang;if(lang==='ar')col.dir='rtl';const h=document.createElement('h2');h.textContent=t[lang];const p=document.createElement('p');p.textContent=lang==='it'?t.di:t.da;col.append(h,p);entry.append(col);}box.append(entry);}
 document.querySelector('#count').textContent=found.length+' termini / '+terms.length+' · مصطلحًا';}
 document.querySelector('#search').addEventListener('input',draw);document.querySelector('#print').onclick=()=>window.print();draw();
+const glossaryAudioScript=document.createElement('script');glossaryAudioScript.src='audio.js';document.body.append(glossaryAudioScript);
