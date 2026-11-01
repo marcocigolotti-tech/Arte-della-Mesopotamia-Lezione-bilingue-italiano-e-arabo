@@ -17,6 +17,10 @@
       .glossary-image-credit{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;border-top:1px solid #ded8cc;padding:10px 0;font-size:12px}
       .glossary-image-credit p{margin:0}.glossary-image-credit [lang="ar"]{text-align:right;line-height:1.8}
       .glossary-image-credit a{color:#075c9a}
+      #image-zoom{border:0;border-radius:10px;padding:16px;max-width:min(96vw,1300px);max-height:96vh;background:#fbf8f1;color:#233c46}
+      #image-zoom::backdrop{background:rgba(8,20,25,.88)}#image-zoom img{display:block;max-width:92vw;max-height:82vh;width:auto;height:auto;margin:12px auto;object-fit:contain}
+      #image-zoom button{float:right;padding:9px 14px;border:1px solid #526a73;border-radius:6px;background:white;font-weight:bold}#image-zoom figcaption{text-align:center;line-height:1.6}
+      #entries .photo img{cursor:zoom-in}#entries .photo img:focus-visible{outline:4px solid #996232;outline-offset:3px}
       @media(max-width:650px){.audio-tools{padding:12px 16px}.audio-tools-inner{display:block}.audio-buttons{margin-top:9px}.audio-tools button{font-size:14px;padding:8px 10px}.glossary-image-credit{grid-template-columns:1fr;gap:4px}.glossary-image-credit p[lang="ar"]{margin-bottom:12px}}
       @media print{.audio-tools{display:none!important}}
     `;
@@ -185,7 +189,15 @@
       'Lapislazzuli': 18,
       'Madreperla': 19,
       'Rilievo': 20,
-      'Iscrizione': 22
+      'Iscrizione': 22,
+      'Restauro': 23,
+      'Frammento': 24,
+      'Archeologo': 25,
+      'Divinità': 26,
+      'Scriba': 27,
+      'Stilo': 28,
+      'Terrazze sovrapposte': 29,
+      'Tempio': 30
     };
     for (const [word, image] of Object.entries(imageByTerm)) {
       const term = terms.find(item => item.it === word);
@@ -197,6 +209,7 @@
     );
     draw();
     addImageCaptions();
+    enableImageZoom();
     addImageCredits();
   }
 
@@ -209,8 +222,47 @@
     19:['Interno di una conchiglia di abalone: si vede la madreperla; non è un oggetto mesopotamico.','السطح الداخلي لصدفة أذن البحر: تظهر فيه أمّ اللؤلؤ؛ وهي ليست قطعة أثرية من بلاد ما بين النهرين.'],
     20:['Rilievo assiro con un genio alato, conservato al Walters Art Museum: non è un lamassu.','نحت آشوري بارز لِعبقري مجنّح محفوظ في متحف والترز؛ وليس لاماسو.'],
     21:['Drago mušḫuššu della Porta di Ishtar, fotografato nel Museo archeologico di Istanbul.','تنين موشخوشو من بوابة عشتار، صُوّر في متحف إسطنبول للآثار.'],
-    22:['Mattoni iscritti della Porta di Ishtar: dettaglio di una dedica edilizia in scrittura cuneiforme.','طوب منقوش من بوابة عشتار: تفصيل من كتابة بنائية بالخط المسماري.']
+    22:['Mattoni iscritti della Porta di Ishtar: dettaglio di una dedica edilizia in scrittura cuneiforme.','طوب منقوش من بوابة عشتار: تفصيل من كتابة بنائية بالخط المسماري.'],
+    23:['Cilindro d’argilla con un’iscrizione che ricorda il restauro dello ziggurat di Ur voluto da Nabonide.','أسطوانة طينية تحمل كتابة تذكر ترميم زقورة أور بأمر من نابونيد.'],
+    24:['Frammento di tavoletta cuneiforme conservato al Metropolitan Museum of Art.','جزء من لوح مسماري محفوظ في متحف المتروبوليتان للفنون.'],
+    25:['Archeologa al lavoro in una trincea di scavo a Leicester, in Inghilterra: esempio attuale del lavoro sul campo.','عالمة آثار تعمل في خندق تنقيب في ليستر بإنجلترا: مثال معاصر على العمل الميداني.'],
+    26:['Rilievo assiro del dio solare Shamash, conservato al British Museum.','نقش آشوري بارز للإله شمش، محفوظ في المتحف البريطاني.'],
+    27:['Replica della statua dello scriba sumero Dudu, dedicata al dio Ningirsu.','نسخة من تمثال الكاتب السومري دودو، المهدى إلى الإله نينجيرسو.'],
+    28:['Illustrazione di uno stilo usato per scrivere su argilla; non è un reperto mesopotamico.','رسم توضيحي لقلم يُستخدم للكتابة على الطين؛ وليس قطعة أثرية من بلاد ما بين النهرين.'],
+    29:['Modellino moderno dei Giardini pensili: ricostruzione ipotetica, non immagine certa dei giardini antichi.','نموذج حديث للحدائق المعلّقة: إعادة بناء افتراضية، وليست صورة مؤكدة للحدائق القديمة.'],
+    30:['Ricostruzione digitale dello ziggurat di Ur-Nammu, edificio religioso a terrazze.','إعادة بناء رقمية لزقورة أور-نمو، وهي مبنى ديني ذو مصاطب.']
   };
+
+  function enableImageZoom() {
+    const entries = document.querySelector('#entries');
+    if (!entries || entries.dataset.zoomReady) return;
+    entries.dataset.zoomReady = 'true';
+    const dialog = document.createElement('dialog');
+    dialog.id = 'image-zoom';
+    dialog.setAttribute('aria-label', 'Immagine ingrandita / صورة مكبّرة');
+    const close = document.createElement('button');
+    close.type = 'button'; close.textContent = 'Chiudi × / إغلاق';
+    const image = document.createElement('img');
+    const caption = document.createElement('figcaption');
+    dialog.append(close, image, caption); document.body.append(dialog);
+    close.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+    entries.addEventListener('click', event => {
+      const thumb = event.target.closest('.photo img');
+      if (!thumb) return;
+      image.src = thumb.src; image.alt = thumb.alt;
+      caption.replaceChildren(...Array.from(thumb.closest('figure').querySelector('figcaption').childNodes).map(node => node.cloneNode(true)));
+      dialog.showModal();
+    });
+    entries.addEventListener('keydown', event => {
+      if ((event.key === 'Enter' || event.key === ' ') && event.target.matches('.photo img')) {
+        event.preventDefault(); event.target.click();
+      }
+    });
+    const enableKeyboardAccess = () => entries.querySelectorAll('.photo img').forEach(img => { img.tabIndex = 0; img.setAttribute('role','button'); img.setAttribute('aria-label','Ingrandisci immagine / تكبير الصورة'); });
+    enableKeyboardAccess();
+    new MutationObserver(enableKeyboardAccess).observe(entries,{childList:true,subtree:true});
+  }
 
   function addImageCaptions() {
     document.querySelectorAll('#entries .entry').forEach(entry => {
@@ -250,7 +302,15 @@
       ['Interno di conchiglia di abalone','Kowloonese — CC BY-SA 3.0 e GFDL 1.2 o successiva.','السطح الداخلي لصدفة أذن البحر','Kowloonese — ترخيص CC BY-SA 3.0 ورخصة GFDL 1.2 أو أحدث.','https://commons.wikimedia.org/wiki/File:AbaloneInside.jpg','https://creativecommons.org/licenses/by-sa/3.0/'],
       ['Genio alato assiro','Walters Art Museum — fotografia di opera bidimensionale in pubblico dominio.','عبقري آشوري مجنّح','متحف والترز للفنون — صورة لعمل ثنائي الأبعاد ضمن الملكية العامة.','https://commons.wikimedia.org/wiki/File:Assyrian_-_Relief_with_Winged_Genius_-_Walters_219_-_Detail_A.jpg','https://creativecommons.org/publicdomain/mark/1.0/'],
       ['Drago mušḫuššu','Ywpark2003 — CC0 1.0.','تنين موشخوشو','Ywpark2003 — ترخيص CC0 1.0.','https://commons.wikimedia.org/wiki/File:Glazed_Brick_Relief_of_Mushkhushshu_Dragon_from_Ishtar_Gate_Babylon_Istanbul_Archaeology_Museums.jpg','https://creativecommons.org/publicdomain/zero/1.0/'],
-      ['Iscrizione della Porta di Ishtar','Osama Shukir Muhammed Amin — CC BY-SA 4.0.','نقش بوابة عشتار','Osama Shukir Muhammed Amin — ترخيص CC BY-SA 4.0.','https://commons.wikimedia.org/wiki/File:Detail,_Nebuchadnezzar_II%27s_Building_Inscription_plaque_of_the_Ishtar_Gate,_from_Babylon,_Iraq._6th_century_BCE._Pergamon_Museum.jpg','https://creativecommons.org/licenses/by-sa/4.0/']
+      ['Iscrizione della Porta di Ishtar','Osama Shukir Muhammed Amin — CC BY-SA 4.0.','نقش بوابة عشتار','Osama Shukir Muhammed Amin — ترخيص CC BY-SA 4.0.','https://commons.wikimedia.org/wiki/File:Detail,_Nebuchadnezzar_II%27s_Building_Inscription_plaque_of_the_Ishtar_Gate,_from_Babylon,_Iraq._6th_century_BCE._Pergamon_Museum.jpg','https://creativecommons.org/licenses/by-sa/4.0/'],
+      ['Restauro dello ziggurat di Ur','Osama Shukir Muhammed Amin — CC BY-SA 4.0.','ترميم زقورة أور','Osama Shukir Muhammed Amin — ترخيص CC BY-SA 4.0.','https://commons.wikimedia.org/wiki/File:Nabonidus%27s_preoccupation_with_the_moon_god_Sin_led_to_building_work_outside_Babylon._This_clay_cylinder_records_the_restoration_of_Sin%27s_ziggurat_at_Ur,_and_also_asks_him_to_protect_Nabonidus_and_his_son,_Belshazzar._From_Ur,_Iraq.jpg','https://creativecommons.org/licenses/by-sa/4.0/'],
+      ['Frammento di tavoletta cuneiforme','The Metropolitan Museum of Art — CC0 1.0.','جزء من لوح مسماري','متحف المتروبوليتان للفنون — CC0 1.0.','https://commons.wikimedia.org/wiki/File:Cuneiform_tablet-_fragment_MET_vs86.11.491.jpg','https://creativecommons.org/publicdomain/zero/1.0/'],
+      ['Archeologa al lavoro','Sue Hutton — CC BY-SA 2.0.','عالمة آثار أثناء العمل','Sue Hutton — ترخيص CC BY-SA 2.0.','https://commons.wikimedia.org/wiki/File:Archaeologist_working_in_Trench.jpg','https://creativecommons.org/licenses/by-sa/2.0/'],
+      ['Rilievo del dio Shamash','Fotografia di Capillon; immagine in pubblico dominio.','نقش الإله شمش','تصوير Capillon؛ الصورة ضمن الملكية العامة.','https://commons.wikimedia.org/wiki/File:Shamash.jpg','https://creativecommons.org/publicdomain/mark/1.0/'],
+      ['Replica dello scriba Dudu','Osama Shukir Muhammed Amin — CC BY-SA 4.0.','نسخة تمثال الكاتب دودو','Osama Shukir Muhammed Amin — ترخيص CC BY-SA 4.0.','https://commons.wikimedia.org/wiki/File:A_replica_of_the_seated_statue_of_the_Sumerian_scribe_Dudu,_dedicated_to_god_Ningirsu._Sulaymaniyah_Museum.jpg','https://creativecommons.org/licenses/by-sa/4.0/'],
+      ['Stilo','Pearson Scott Foresman — pubblico dominio.','قلم الكتابة','Pearson Scott Foresman — ضمن الملكية العامة.','https://commons.wikimedia.org/wiki/File:Stylus_(PSF).png','https://creativecommons.org/publicdomain/mark/1.0/'],
+      ['Modellino dei Giardini pensili','DestinationFearFan — CC BY-SA 4.0.','نموذج الحدائق المعلّقة','DestinationFearFan — ترخيص CC BY-SA 4.0.','https://commons.wikimedia.org/wiki/File:Hanging_Gardens_of_Babylon_model.jpg','https://creativecommons.org/licenses/by-sa/4.0/'],
+      ['Ricostruzione dello ziggurat di Ur-Nammu','wikiwikiyarou — pubblico dominio.','إعادة بناء زقورة أور-نمو','wikiwikiyarou — ضمن الملكية العامة.','https://commons.wikimedia.org/wiki/File:Ziggurat_of_ur.jpg','https://creativecommons.org/publicdomain/mark/1.0/']
     ];
     for (const [titleIt, creditIt, titleAr, creditAr, commonsUrl, licenseUrl] of items) {
       const row = document.createElement('div');
@@ -282,6 +342,8 @@
       details.append(row);
     }
   }
+
+  if (isGlossary) document.querySelector('#search')?.addEventListener('input', addImageCaptions);
 
   addStyle();
   if (isGlossary) enhanceGlossary();
